@@ -52,7 +52,7 @@ if st.checkbox("Show full raw data"):
 
 st.text(" ")
 st.write(
-    "Currently showing `{}` in `{}` with letters `{}{}{}` in `iata_code`:".format(
+    "Currently showing `{}` in h`{}` with letters `{}{}{}` in `iata_code`:".format(
         ", ".join(ap_type), ", ".join(country), l1, l2, l3
     )
 )
