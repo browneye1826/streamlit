@@ -13,6 +13,7 @@ def load_data():
     return df
 
 
+original = load_data()
 df = load_data().dropna(subset=["iata_code"])
 
 
@@ -26,15 +27,38 @@ cols = st.sidebar.multiselect(
 )
 
 country = st.sidebar.multiselect(
-    "Filter country", options=df["iso_country"].unique(), default="US"
-)
-ap_type = st.sidebar.multiselect(
-    "Filter airport type", options=df["type"].unique(), default="large_airport"
+    "Filter iso_country", options=df["iso_country"].unique(), default="US"
 )
 
-l1 = st.sidebar.text_input("Filter by first letter of IATA", value="A")
-l2 = st.sidebar.text_input("Filter by second letter of IATA")
-l3 = st.sidebar.text_input("Filter by third letter of IATA")
+# --- TYPE ---
+type_container = st.sidebar.container()
+all_ap_type = st.sidebar.checkbox("Select all")
+
+if all_ap_type:
+    ap_type = type_container.multiselect(
+        "Filter type",
+        options=df["type"].unique(),
+        default=df["type"].unique(),
+    )
+else:
+    ap_type = type_container.multiselect(
+        "Filter airport type",
+        options=df["type"].unique(),
+        default="large_airport",
+    )
+
+# --- IATA LETTERS ---
+st.sidebar.write("Filter iata_code by letters:")
+col1, col2, col3 = st.sidebar.columns(3)
+
+with col1:
+    l1 = st.text_input("Letter 1", value="A")
+
+with col2:
+    l2 = st.text_input("Letter 2")
+
+with col3:
+    l3 = st.text_input("Letter 3")
 
 
 df_selection = df.query(
@@ -42,23 +66,29 @@ df_selection = df.query(
 )
 
 #  --- MAIN PAGE ---
-st.title("Global Airport Data :airplane:")
+st.title("Global IATA Airport Data :airplane:")
+st.write("Updates nightly")
 st.write("***")
 st.write("\n")
 
 if st.checkbox("Show full raw data"):
     st.subheader("All raw data")
-    st.dataframe(df)
+    st.dataframe(original)
 
 st.text(" ")
 st.write(
-    "Currently showing `{}` in h`{}` with letters `{}{}{}` in `iata_code`:".format(
+    "Currently showing `{}` in `{}` with letters `{}{}{}` in `iata_code`:".format(
         ", ".join(ap_type), ", ".join(country), l1, l2, l3
     )
 )
 st.dataframe(df_selection[cols])
+st.caption(
+    "{} (out of {}) rows accross {} columns".format(
+        df_selection[cols].shape[0], original.shape[0], df_selection[cols].shape[1]
+    )
+)
 
-with st.expander("Show map"):
+with st.expander("Visualize selection on map"):
     st.map(df_selection.rename(columns={"longitude_deg": "lon", "latitude_deg": "lat"}))
 
 
