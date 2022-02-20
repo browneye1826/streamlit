@@ -68,7 +68,7 @@ df_selection = df.query(
 #  --- MAIN PAGE ---
 st.title("Global IATA Airport Data :airplane:")
 st.write(
-    "Inspired by [Airportle](https://airportle.scottscheapflights.com/), a Wordle for airports | Updates nightly."
+    "Inspired by [Airportle](https://airportle.scottscheapflights.com/), a Wordle game for airports | Data updates nightly."
 )
 st.write("***")
 st.write("\n")
@@ -79,7 +79,7 @@ if st.checkbox("Show full raw data"):
 
 st.text(" ")
 st.write(
-    "Currently showing `{}` in `{}` with letters `{}{}{}` in `iata_code`:".format(
+    "Currently showing `{}` in `{}` with letters `{}{}{}` respectively in `iata_code`:".format(
         ", ".join(ap_type), ", ".join(country), l1, l2, l3
     )
 )
