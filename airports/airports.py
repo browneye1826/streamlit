@@ -62,12 +62,14 @@ with col3:
 
 
 df_selection = df.query(
-    "iso_country == @country & type == @ap_type & iata_code.str[0] == @l1 | iata_code.str[1] == @l2 | iata_code.str[2] == @l3"
+    "iso_country == @country & type == @ap_type & (iata_code.str[0] == @l1 | iata_code.str[1] == @l2 | iata_code.str[2] == @l3)"
 )
 
 #  --- MAIN PAGE ---
 st.title("Global IATA Airport Data :airplane:")
-st.write("Updates nightly")
+st.write(
+    "Inspired by [Airportle](https://airportle.scottscheapflights.com/), a Wordle for airports | Updates nightly."
+)
 st.write("***")
 st.write("\n")
 
