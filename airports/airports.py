@@ -62,7 +62,7 @@ with col3:
 
 
 df_selection = df.query(
-    "(iso_country == @country) and (type == @ap_type) and (iata_code.str[0] == @l1) or (iata_code.str[1] == @l2) or (iata_code.str[2] == @l3)"
+    "(iso_country == @country) and (type == @ap_type) and (iata_code.str[0] == @l1 or iata_code.str[1] == @l2 or iata_code.str[2] == @l3)"
 )
 
 #  --- MAIN PAGE ---
