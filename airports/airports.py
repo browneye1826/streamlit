@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import country_converter as coco
+import plotly.express as px
 
 
 st.set_page_config(
@@ -75,7 +76,7 @@ df_selection = df.query(
 #  --- MAIN PAGE ---
 st.title("Global IATA Airport Data :airplane:")
 st.write(
-    "Inspired by [Airportle](https://airportle.scottscheapflights.com/), a Wordle game for airports | Data updates nightly."
+    "Inspired by [Airportle](https://airportle.scottscheapflights.com/), a Wordle game for airports."
 )
 st.write("***")
 st.write("\n")
@@ -97,9 +98,26 @@ st.caption(
     )
 )
 
+# --- MAP ---
+fig = px.scatter_mapbox(
+    df_selection,
+    lat="latitude_deg",
+    lon="longitude_deg",
+    hover_name="iata_code",
+    hover_data={"name": True, "latitude_deg": False, "longitude_deg": False},
+    color_discrete_sequence=["#ff4b4b"],
+    zoom=1,
+    height=400,
+)
+fig.update_layout(mapbox_style="open-street-map")
+fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+fig.update_layout(
+    hoverlabel_font={"family": "Open Sans", "color": "#FFFFFF"},
+    hoverlabel_bordercolor="#ff4b4b",
+)
 with st.expander("Visualize selection on map"):
-    st.map(df_selection.rename(columns={"longitude_deg": "lon", "latitude_deg": "lat"}))
+    st.plotly_chart(fig, True)
 
 
 st.write("\n\n")
-st.caption("[Data source](https://ourairports.com/data/)")
+st.caption("[Data source](https://ourairports.com/data/) (updates nightly)")
