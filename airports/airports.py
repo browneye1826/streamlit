@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import country_converter as coco
 
 
 st.set_page_config(
@@ -26,8 +27,14 @@ cols = st.sidebar.multiselect(
     default=["municipality", "iso_country", "name", "iata_code"],
 )
 
+# --- COUNTRIES ---
+
+ccdict = coco.agg_conc("ISO2", "name_short", as_dataframe=False)
 country = st.sidebar.multiselect(
-    "Filter iso_country", options=df["iso_country"].unique(), default="US"
+    "Filter iso_country",
+    options=df["iso_country"].dropna().unique(),
+    default="US",
+    format_func=ccdict.get,
 )
 
 # --- TYPE ---
