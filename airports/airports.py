@@ -29,14 +29,18 @@ cols = st.sidebar.multiselect(
 )
 
 # --- COUNTRIES ---
-
+country_container = st.sidebar.container()
+all_countries = st.sidebar.checkbox("All countries")
 ccdict = coco.agg_conc("ISO2", "name_short", as_dataframe=False)
-country = st.sidebar.multiselect(
-    "Filter iso_country",
-    options=df["iso_country"].dropna().unique(),
-    default="US",
-    format_func=ccdict.get,
-)
+country = "all countries"
+
+if not all_countries:
+    country = country_container.multiselect(
+        "Filter iso_country",
+        options=df["iso_country"].dropna().unique(),
+        default="US",
+        format_func=ccdict.get,
+    )
 
 # --- TYPE ---
 type_container = st.sidebar.container()
@@ -68,10 +72,14 @@ with col2:
 with col3:
     l3 = st.text_input("Letter 3")
 
-
-df_selection = df.query(
-    "(iso_country == @country) and (type == @ap_type) and (iata_code.str[0] == @l1 or iata_code.str[1] == @l2 or iata_code.str[2] == @l3)"
-)
+if all_countries:
+    df_selection = df.query(
+        "(type == @ap_type) and (iata_code.str[0] == @l1 or iata_code.str[1] == @l2 or iata_code.str[2] == @l3)"
+    )
+else:
+    df_selection = df.query(
+        "(iso_country == @country) and (type == @ap_type) and (iata_code.str[0] == @l1 or iata_code.str[1] == @l2 or iata_code.str[2] == @l3)"
+    )
 
 #  --- MAIN PAGE ---
 st.title("Global IATA Airport Data :airplane:")
@@ -88,7 +96,11 @@ if st.checkbox("Show full raw data"):
 st.text(" ")
 st.write(
     "Currently showing `{}` in `{}` with letters `{}{}{}` respectively in `iata_code`:".format(
-        ", ".join(ap_type), ", ".join(country), l1, l2, l3
+        ", ".join(ap_type),
+        country if country == "all countries" else ", ".join(country),
+        l1,
+        l2,
+        l3,
     )
 )
 st.dataframe(df_selection[cols])
@@ -104,7 +116,13 @@ fig = px.scatter_mapbox(
     lat="latitude_deg",
     lon="longitude_deg",
     hover_name="iata_code",
-    hover_data={"name": True, "latitude_deg": False, "longitude_deg": False},
+    hover_data={
+        "name": True,
+        "municipality": True,
+        "type": True,
+        "latitude_deg": False,
+        "longitude_deg": False,
+    },
     color_discrete_sequence=["#ff4b4b"],
     zoom=1,
     height=400,
@@ -115,6 +133,7 @@ fig.update_layout(
     hoverlabel_font={"family": "Open Sans", "color": "#FFFFFF"},
     hoverlabel_bordercolor="#ff4b4b",
 )
+fig.update_traces(textposition="top center")
 with st.expander("Visualize selection on map"):
     st.plotly_chart(fig, True)
 
