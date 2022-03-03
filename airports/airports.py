@@ -142,6 +142,5 @@ with st.expander("Visualize selection on map"):
 st.write("\n\n")
 st.caption("[Data source](https://ourairports.com/data/) (updates nightly)")
 
-components.html("""<script id="help-ukraine-win" async="true" 
-                src="https://helpukrainewinwidget.org/cdn/widget.js" data-type="four" data-position="bottom-left"></script>
+components.html("""<script id="help-ukraine-win" async="true" src="https://helpukrainewinwidget.org/cdn/widget.js" data-type="three" data-position="top-left"></script>
 """)
