@@ -1,6 +1,5 @@
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
 import country_converter as coco
 import plotly.express as px
 
@@ -141,6 +140,3 @@ with st.expander("Visualize selection on map"):
 
 st.write("\n\n")
 st.caption("[Data source](https://ourairports.com/data/) (updates nightly)")
-
-components.html("""<script id="help-ukraine-win" async="true" src="https://helpukrainewinwidget.org/cdn/widget.js" data-type="three" data-position="top-left"></script>
-""")
