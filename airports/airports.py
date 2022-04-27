@@ -64,13 +64,16 @@ st.sidebar.write("Filter iata_code by letters:")
 col1, col2, col3 = st.sidebar.columns(3)
 
 with col1:
-    l1 = st.text_input("Letter 1", value="A")
+    l1 = st.text_input("Letter 1", value="A").upper()
 
 with col2:
-    l2 = st.text_input("Letter 2")
+    l2 = st.text_input("Letter 2").upper()
 
 with col3:
-    l3 = st.text_input("Letter 3")
+    l3 = st.text_input("Letter 3").upper()
+
+exclude = st.sidebar.text_input("Exclude these letters").upper()
+st.write(exclude)
 
 if all_countries:
     df_selection = df.query(
@@ -78,9 +81,8 @@ if all_countries:
     )
 else:
     df_selection = df.query(
-        "(iso_country == @country) and (type == @ap_type) and (iata_code.str[0] == @l1 or iata_code.str[1] == @l2 or iata_code.str[2] == @l3)"
+        "(iso_country == @country) and (type == @ap_type) and (iata_code.str[0] == @l1 or iata_code.str[1] == @l2 or iata_code.str[2] == @l3) and (~iata_code.str.contains('[@exclude]', regex=True, case=False))"
     )
-
 #  --- MAIN PAGE ---
 st.title("Global IATA Airport Data :airplane:")
 st.write(
@@ -105,7 +107,7 @@ st.write(
 )
 st.dataframe(df_selection[cols])
 st.caption(
-    "{} (out of {}) rows accross {} columns".format(
+    "{:,} (out of {:,}) rows accross {} columns".format(
         df_selection[cols].shape[0], original.shape[0], df_selection[cols].shape[1]
     )
 )
@@ -119,6 +121,7 @@ fig = px.scatter_mapbox(
     hover_data={
         "name": True,
         "municipality": True,
+        "iso_country": True,
         "type": True,
         "latitude_deg": False,
         "longitude_deg": False,
